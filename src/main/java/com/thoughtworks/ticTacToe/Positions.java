@@ -9,7 +9,7 @@ public class Positions {
     this.list = new HashSet();
   }
 
-  public void add(int...numbers) {
+  public void addPositionItems(int...numbers) {
     for (int number : numbers) {
       list.add(new Position(number));
     }
