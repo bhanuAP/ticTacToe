@@ -7,7 +7,6 @@ public class Player {
   private WinningCombinations winningCombinations;
 
   public Player(String name, String symbol) {
-
     this.name = name;
     this.symbol = symbol;
     this.playedMoves = new Positions();

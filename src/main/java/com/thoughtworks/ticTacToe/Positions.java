@@ -12,10 +12,6 @@ public class Positions extends HashSet<Position> {
     return this;
   }
 
-  public void print() {
-    System.out.println(this);
-  }
-
   @Override
   public boolean removeIf(Predicate<? super Position> filter) {
     return false;
