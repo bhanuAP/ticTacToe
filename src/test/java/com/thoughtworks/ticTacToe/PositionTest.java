@@ -16,4 +16,3 @@ public class PositionTest {
     assertNotEquals(new Position(1),new Position(2));
   }
 }
-
