@@ -1,21 +1,20 @@
 package com.thoughtworks.ticTacToe;
 
 import java.util.HashSet;
+import java.util.function.Predicate;
 
-public class Positions {
-  private HashSet<Position> list;
+public class Positions extends HashSet<Position> {
 
-  public Positions() {
-    this.list = new HashSet();
-  }
-
-  public void addPositionItems(int...numbers) {
+  public Positions add(int...numbers) {
     for (int number : numbers) {
-      list.add(new Position(number));
+      this.add(new Position(number));
     }
+    return this;
   }
 
-  public boolean hasItem(Position position) {
-    return list.contains(position);
+  @Override
+  public boolean removeIf(Predicate<? super Position> filter) {
+    return false;
   }
+
 }

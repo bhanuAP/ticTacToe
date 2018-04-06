@@ -2,11 +2,10 @@ package com.thoughtworks.ticTacToe;
 
 import java.util.HashSet;
 
-public class WinningCombinations {
-  private HashSet<Positions> list;
-
-  public void addAsCombination(int...numbers) {
+public class WinningCombinations extends HashSet {
+  public WinningCombinations addCombination(int...numbers) {
     Positions positions = new Positions();
-    positions.addPositionItems(numbers);
+    this.add(positions.add(numbers));
+    return this;
   }
 }
