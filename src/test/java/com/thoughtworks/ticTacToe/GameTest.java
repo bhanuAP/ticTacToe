@@ -49,35 +49,40 @@ public class GameTest {
   public void shouldSetCurrentPlayer() throws PlayersAlreadyJoined {
     game.addPlayer(player1);
     game.addPlayer(player2);
-    assertThat(game.initializeGameSetup(),is(player1));
   }
 
   @Test
   public void shouldChangeCurrentPlayer() throws PlayersAlreadyJoined {
     game.addPlayer(player1);
     game.addPlayer(player2);
-    game.initializeGameSetup();
-    assertEquals(game.getCurrentPlayer(),player1);
-    game.addMoveToCurrentPlayer(1);
     assertEquals(game.getCurrentPlayer(),player2);
-    game.addMoveToCurrentPlayer(2);
+    game.addMoveToCurrentPlayer(1);
     assertEquals(game.getCurrentPlayer(),player1);
+    game.addMoveToCurrentPlayer(2);
+    assertEquals(game.getCurrentPlayer(),player2);
   }
 
   @Test
   public void shouldAddMovesToCurrentPlayer() throws PlayersAlreadyJoined {
     game.addPlayer(player1);
     game.addPlayer(player2);
-    game.initializeGameSetup();
-    assertTrue(game.addMoveToCurrentPlayer(1));
+    assertEquals(game.addMoveToCurrentPlayer(1),new Positions().add(1));
   }
 
   @Test
   public void shouldChangeCurrentPlayerWheneverPlayerMadeAMove() throws PlayersAlreadyJoined {
     game.addPlayer(player1);
     game.addPlayer(player2);
-    game.initializeGameSetup();
     game.addMoveToCurrentPlayer(1);
+    assertThat(game.getCurrentPlayer(),is(player1));
+  }
+
+  @Test
+  public void shouldAddMovesForBothPlayers() throws PlayersAlreadyJoined {
+    game.addPlayer(player1);
+    game.addPlayer(player2);
+    game.addMoveToCurrentPlayer(1);
+    game.addMoveToCurrentPlayer(2);
     assertThat(game.getCurrentPlayer(),is(player2));
   }
 }

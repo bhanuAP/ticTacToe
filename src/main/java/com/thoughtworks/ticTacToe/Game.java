@@ -11,13 +11,11 @@ public class Game {
   }
 
   public boolean addPlayer(Player player) throws PlayersAlreadyJoined {
-    if (players.size() < 2)
-    return players.add(player);
+    if (players.size() < 2){
+      this.currentPlayer = player;
+      return players.add(player);
+    }
     throw new PlayersAlreadyJoined();
-  }
-
-  public Player initializeGameSetup() {
-    return this.currentPlayer = players.get(0);
   }
 
   public boolean setWinningCombinations(WinningCombinations winningCombinations) {
@@ -29,10 +27,9 @@ public class Game {
     return false;
   }
 
-  public boolean addMoveToCurrentPlayer(int number) {
-    this.currentPlayer.addMove(number);
+  public Positions addMoveToCurrentPlayer(int number) {
     this.changeCurrentPlayer();
-    return true;
+    return this.currentPlayer.addMove(number);
   }
 
   private Player changeCurrentPlayer() {
