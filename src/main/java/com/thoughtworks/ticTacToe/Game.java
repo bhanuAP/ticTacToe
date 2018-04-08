@@ -1,13 +1,17 @@
 package com.thoughtworks.ticTacToe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class Game {
   private ArrayList<Player> players;
   private Player currentPlayer;
+  private HashSet<Integer> moves;
 
   public Game() {
     this.players = new ArrayList();
+    this.moves = new HashSet(Arrays.asList(1,2,3,4,5,6,7,8,9));
   }
 
   public boolean addPlayer(Player player) throws PlayersAlreadyJoined {
@@ -27,9 +31,13 @@ public class Game {
     return false;
   }
 
-  public Positions addMoveToCurrentPlayer(int number) {
+  public Positions addMoveToCurrentPlayer(int number) throws moveAlreadyPlayed {
     this.changeCurrentPlayer();
-    return this.currentPlayer.addMove(number);
+    if(this.moves.contains(number)) {
+      this.moves.remove(number);
+      return this.currentPlayer.addMove(number);
+    }
+    throw new moveAlreadyPlayed();
   }
 
   private Player changeCurrentPlayer() {

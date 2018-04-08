@@ -52,7 +52,7 @@ public class GameTest {
   }
 
   @Test
-  public void shouldChangeCurrentPlayer() throws PlayersAlreadyJoined {
+  public void shouldChangeCurrentPlayer() throws PlayersAlreadyJoined, moveAlreadyPlayed {
     game.addPlayer(player1);
     game.addPlayer(player2);
     assertEquals(game.getCurrentPlayer(),player2);
@@ -63,14 +63,14 @@ public class GameTest {
   }
 
   @Test
-  public void shouldAddMovesToCurrentPlayer() throws PlayersAlreadyJoined {
+  public void shouldAddMovesToCurrentPlayer() throws PlayersAlreadyJoined, moveAlreadyPlayed {
     game.addPlayer(player1);
     game.addPlayer(player2);
     assertEquals(game.addMoveToCurrentPlayer(1),new Positions().add(1));
   }
 
   @Test
-  public void shouldChangeCurrentPlayerWheneverPlayerMadeAMove() throws PlayersAlreadyJoined {
+  public void shouldChangeCurrentPlayerWheneverPlayerMadeAMove() throws PlayersAlreadyJoined, moveAlreadyPlayed {
     game.addPlayer(player1);
     game.addPlayer(player2);
     game.addMoveToCurrentPlayer(1);
@@ -78,11 +78,19 @@ public class GameTest {
   }
 
   @Test
-  public void shouldAddMovesForBothPlayers() throws PlayersAlreadyJoined {
+  public void shouldAddMovesForBothPlayers() throws PlayersAlreadyJoined, moveAlreadyPlayed {
     game.addPlayer(player1);
     game.addPlayer(player2);
     game.addMoveToCurrentPlayer(1);
     game.addMoveToCurrentPlayer(2);
     assertThat(game.getCurrentPlayer(),is(player2));
+  }
+
+  @Test (expected = moveAlreadyPlayed.class)
+  public void shouldNotAllowToPlayRepeatedMoves() throws PlayersAlreadyJoined, moveAlreadyPlayed {
+    game.addPlayer(player1);
+    game.addPlayer(player2);
+    game.addMoveToCurrentPlayer(1);
+    game.addMoveToCurrentPlayer(1);
   }
 }
