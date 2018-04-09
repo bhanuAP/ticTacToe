@@ -19,7 +19,7 @@ public class Positions extends HashSet<Position> {
 
   public boolean isSubset(WinningCombinations combinations) {
     for (Positions combination : combinations) {
-      if(combination.containsAll(this)) {
+      if(this.containsAll(combination)) {
         return true;
       }
     }

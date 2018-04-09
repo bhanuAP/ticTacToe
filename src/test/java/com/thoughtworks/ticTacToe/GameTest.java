@@ -16,7 +16,7 @@ public class GameTest {
   public void setUp() {
     game = new Game();
     player1 = new Player("Bhanu Teja", "*");
-    player2 = new Player("Pavan Kalyan", "*");
+    player2 = new Player("Pavan Kalyan", "#");
   }
 
   @Test
@@ -52,7 +52,7 @@ public class GameTest {
   }
 
   @Test
-  public void shouldChangeCurrentPlayer() throws PlayersAlreadyJoined, moveAlreadyPlayed {
+  public void shouldChangeCurrentPlayer() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
     game.addPlayer(player1);
     game.addPlayer(player2);
     assertEquals(game.getCurrentPlayer(),player2);
@@ -63,14 +63,14 @@ public class GameTest {
   }
 
   @Test
-  public void shouldAddMovesToCurrentPlayer() throws PlayersAlreadyJoined, moveAlreadyPlayed {
+  public void shouldAddMovesToCurrentPlayer() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
     game.addPlayer(player1);
     game.addPlayer(player2);
     assertEquals(game.addMoveToCurrentPlayer(1),new Positions().add(1));
   }
 
   @Test
-  public void shouldChangeCurrentPlayerWheneverPlayerMadeAMove() throws PlayersAlreadyJoined, moveAlreadyPlayed {
+  public void shouldChangeCurrentPlayerWheneverPlayerMadeAMove() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
     game.addPlayer(player1);
     game.addPlayer(player2);
     game.addMoveToCurrentPlayer(1);
@@ -78,7 +78,7 @@ public class GameTest {
   }
 
   @Test
-  public void shouldAddMovesForBothPlayers() throws PlayersAlreadyJoined, moveAlreadyPlayed {
+  public void shouldAddMovesForBothPlayers() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
     game.addPlayer(player1);
     game.addPlayer(player2);
     game.addMoveToCurrentPlayer(1);
@@ -87,10 +87,94 @@ public class GameTest {
   }
 
   @Test (expected = moveAlreadyPlayed.class)
-  public void shouldNotAllowToPlayRepeatedMoves() throws PlayersAlreadyJoined, moveAlreadyPlayed {
+  public void shouldNotAllowToPlayRepeatedMoves() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
     game.addPlayer(player1);
     game.addPlayer(player2);
     game.addMoveToCurrentPlayer(1);
     game.addMoveToCurrentPlayer(1);
+  }
+
+  @Test
+  public void shouldTellWhetherPlayerHasWon() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
+    game.addPlayer(player1);
+    game.addPlayer(player2);
+    WinningCombinations winningCombinations = new WinningCombinations();
+    winningCombinations.addCombination(1,2,3);
+    winningCombinations.addCombination(4,5,6);
+    game.setWinningCombinations(winningCombinations);
+    game.addMoveToCurrentPlayer(1);
+    game.addMoveToCurrentPlayer(5);
+    game.addMoveToCurrentPlayer(2);
+    game.addMoveToCurrentPlayer(6);
+    game.addMoveToCurrentPlayer(3);
+    assertTrue(game.player1HasWon());
+  }
+
+  @Test
+  public void shouldCheckForPlayerNotWonConditions() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
+    game.addPlayer(player1);
+    game.addPlayer(player2);
+    WinningCombinations winningCombinations = new WinningCombinations();
+    winningCombinations.addCombination(1,2,3);
+    winningCombinations.addCombination(4,5,6);
+    game.setWinningCombinations(winningCombinations);
+    game.addMoveToCurrentPlayer(1);
+    game.addMoveToCurrentPlayer(4);
+    game.addMoveToCurrentPlayer(2);
+    game.addMoveToCurrentPlayer(5);
+    game.addMoveToCurrentPlayer(3);
+    assertFalse(game.player2HasWon());
+  }
+
+  @Test
+  public void shouldCheckWhetherGameHasDrawn() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
+    game.addPlayer(player1);
+    game.addPlayer(player2);
+    game.addMoveToCurrentPlayer(1);
+    game.addMoveToCurrentPlayer(2);
+    game.addMoveToCurrentPlayer(3);
+    game.addMoveToCurrentPlayer(5);
+    game.addMoveToCurrentPlayer(4);
+    game.addMoveToCurrentPlayer(6);
+    game.addMoveToCurrentPlayer(8);
+    game.addMoveToCurrentPlayer(7);
+    game.addMoveToCurrentPlayer(9);
+    assertTrue(game.isDrawn());
+  }
+
+  @Test
+  public void shouldCheckStatusOfGame() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
+    game.addPlayer(player1);
+    game.addPlayer(player2);
+    WinningCombinations winningCombinations = new WinningCombinations();
+    winningCombinations.addCombination(1,2,3);
+    winningCombinations.addCombination(4,5,6);
+    game.setWinningCombinations(winningCombinations);
+    assertThat(game.getStatus(),is("started"));
+    game.addMoveToCurrentPlayer(1);
+    game.addMoveToCurrentPlayer(5);
+    game.addMoveToCurrentPlayer(2);
+    game.addMoveToCurrentPlayer(9);
+    game.addMoveToCurrentPlayer(3);
+    game.updateStatus();
+    assertThat(game.getStatus(),is("player1 has won"));
+  }
+
+  @Test (expected = gameAlreadyCompleted.class)
+  public void shouldNotAllowPlayerToPlayTurnOnceStatusHasChanged() throws PlayersAlreadyJoined, moveAlreadyPlayed, gameAlreadyCompleted {
+    game.addPlayer(player1);
+    game.addPlayer(player2);
+    WinningCombinations winningCombinations = new WinningCombinations();
+    winningCombinations.addCombination(1,2,3);
+    winningCombinations.addCombination(4,5,6);
+    game.setWinningCombinations(winningCombinations);
+    game.addMoveToCurrentPlayer(1);
+    game.addMoveToCurrentPlayer(4);
+    game.addMoveToCurrentPlayer(2);
+    game.addMoveToCurrentPlayer(5);
+    game.addMoveToCurrentPlayer(3);
+    game.updateStatus();
+    game.addMoveToCurrentPlayer(6);
+    System.out.println(game.getStatus());
   }
 }

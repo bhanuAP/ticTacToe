@@ -8,10 +8,12 @@ public class Game {
   private ArrayList<Player> players;
   private Player currentPlayer;
   private HashSet<Integer> moves;
+  private String status;
 
   public Game() {
     this.players = new ArrayList();
     this.moves = new HashSet(Arrays.asList(1,2,3,4,5,6,7,8,9));
+    this.status = "started";
   }
 
   public boolean addPlayer(Player player) throws PlayersAlreadyJoined {
@@ -31,20 +33,47 @@ public class Game {
     return false;
   }
 
-  public Positions addMoveToCurrentPlayer(int number) throws moveAlreadyPlayed {
+  public Positions addMoveToCurrentPlayer(int number) throws moveAlreadyPlayed, gameAlreadyCompleted {
     this.changeCurrentPlayer();
-    if(this.moves.contains(number)) {
-      this.moves.remove(number);
-      return this.currentPlayer.addMove(number);
-    }
-    throw new moveAlreadyPlayed();
+    if(status != "started") throw new gameAlreadyCompleted();
+    if(!this.moves.contains(number)) throw new moveAlreadyPlayed();
+    this.moves.remove(number);
+    return this.currentPlayer.addMove(number);
   }
 
   private Player changeCurrentPlayer() {
     return currentPlayer = players.get(1-players.indexOf(currentPlayer));
   }
 
+  public boolean player1HasWon() {
+    return players.get(0).hasWon();
+  }
+
+  public boolean player2HasWon() {
+    return players.get(1).hasWon();
+  }
+
+  public boolean isDrawn() {
+    return this.moves.size() == 0;
+  }
+
+  public void updateStatus() {
+    if(players.get(0).hasWon()) {
+      this.status = "player1 has won";
+    }
+    if(players.get(1).hasWon()) {
+     this.status = "player2 has won";
+    }
+    if(moves.size() == 0) {
+      this.status = "game drawn";
+    }
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
   public Player getCurrentPlayer() {
-    return this.currentPlayer;
+    return currentPlayer;
   }
 }
