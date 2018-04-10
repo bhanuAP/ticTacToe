@@ -16,30 +16,13 @@ public class Game {
     this.status = "started";
   }
 
-  public boolean addPlayer(Player player) throws PlayersAlreadyJoined {
-    if (players.size() < 2){
-      this.currentPlayer = player;
-      return players.add(player);
-    }
-    throw new PlayersAlreadyJoined();
+  public String getStatus() {
+    return status;
   }
 
-  public boolean setWinningCombinations(WinningCombinations winningCombinations) {
-    if (players.size() == 2) {
-      players.get(0).setWinningCombinationsAs(winningCombinations);
-      players.get(1).setWinningCombinationsAs(winningCombinations);
-      return true;
-    }
-    return false;
-  }
-
-  public Positions addMoveToCurrentPlayer(int number) throws moveAlreadyPlayed, gameAlreadyCompleted {
-    this.changeCurrentPlayer();
-    if(status != "started") throw new gameAlreadyCompleted();
-    if(!this.moves.contains(number)) throw new moveAlreadyPlayed();
-    this.moves.remove(number);
-    return this.currentPlayer.addMove(number);
-  }
+//  public Player getCurrentPlayer() {
+//    return currentPlayer;
+//  }
 
   private Player changeCurrentPlayer() {
     return currentPlayer = players.get(1-players.indexOf(currentPlayer));
@@ -58,22 +41,39 @@ public class Game {
   }
 
   public void updateStatus() {
-    if(players.get(0).hasWon()) {
+    if(this.player1HasWon()) {
       this.status = "player1 has won";
     }
-    if(players.get(1).hasWon()) {
+    if(this.player2HasWon()) {
      this.status = "player2 has won";
     }
-    if(moves.size() == 0) {
+    if(this.isDrawn()) {
       this.status = "game drawn";
     }
   }
 
-  public String getStatus() {
-    return status;
+  public boolean addPlayer(Player player) throws PlayersAlreadyJoined {
+    if (players.size() < 2){
+      this.currentPlayer = player;
+      return players.add(player);
+    }
+    throw new PlayersAlreadyJoined();
   }
 
-  public Player getCurrentPlayer() {
-    return currentPlayer;
+  public boolean setWinningCombinations(WinningCombinations winningCombinations) {
+    if (players.size() == 2) {
+      players.get(0).setWinningCombinationsAs(winningCombinations);
+      players.get(1).setWinningCombinationsAs(winningCombinations);
+      return true;
+    }
+    return false;
+  }
+
+  public Positions addMoveToCurrentPlayer(int number) throws InvalidMove, gameAlreadyCompleted {
+    this.changeCurrentPlayer();
+    if(status != "started") throw new gameAlreadyCompleted();
+    if(!this.moves.contains(number)) throw new InvalidMove();
+    this.moves.remove(number);
+    return this.currentPlayer.addMove(number);
   }
 }

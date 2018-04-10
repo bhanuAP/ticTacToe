@@ -1,4 +1,5 @@
 rootProject.name = 'ticTacToe'
 include 'library'
 include 'library'
+include 'application'
 
